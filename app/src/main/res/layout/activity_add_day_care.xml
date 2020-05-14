@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="addCare"
+            type="com.development.daycare.model.addDay.AddCareRequest" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="24dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center_vertical"
+            android:tint="@android:color/white"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_back"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="Add Day Care"
+            android:layout_gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:textSize="20dp"
+            android:gravity="center"/>
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center_vertical"
+            android:tint="@android:color/white"
+            android:layout_marginRight="10dp"
+            android:visibility="invisible"
+            android:src="@drawable/ic_back"/>
+
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="10dp"
+            app:cardElevation="5dp"
+            app:cardCornerRadius="5dp"
+            tools:layout_editor_absoluteX="8dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="20sp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Add Details"
+                    android:paddingBottom="10dp"
+                    android:textColor="@color/colorPrimary"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/daycare_logo"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_color_hint"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:layout_height="wrap_content"
+                        android:text="Upload"
+                        android:textColor="@color/colorPrimary"/>
+
+                </LinearLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/text_color_hint">
+
+                    <EditText
+                        android:id="@+id/input_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/day_care_name"
+                        android:textColor="@color/edit_text_color"
+                        android:singleLine="true"
+                        android:text="@={addCare.daycare_name}"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="10dp"
+            app:cardElevation="5dp"
+            app:cardCornerRadius="5dp"
+            tools:layout_editor_absoluteX="8dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="20sp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/day_care_address"
+
+                    android:textColor="@color/colorPrimary"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/text_color_hint">
+
+                    <EditText
+                        android:id="@+id/input_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/address"
+                        android:textColor="@color/edit_text_color"
+                        android:singleLine="true"
+                        android:text="@={addCare.daycare_address}"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="10dp"
+            app:cardElevation="5dp"
+            app:cardCornerRadius="5dp"
+            tools:layout_editor_absoluteX="8dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="20sp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/day_care_description"
+                    android:textColor="@color/colorPrimary"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/text_color_hint">
+
+                    <EditText
+                        android:id="@+id/input_short_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/shot_description"
+                        android:textColor="@color/edit_text_color"
+                        android:singleLine="true"
+                        android:text="@={addCare.daycare_short_description}"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/text_color_hint">
+
+                    <EditText
+                        android:id="@+id/input_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/description"
+                        android:textColor="@color/edit_text_color"
+                        android:singleLine="true"
+                        android:text="@={addCare.daycare_long_description}"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="10dp"
+            app:cardElevation="5dp"
+            app:cardCornerRadius="5dp"
+            tools:layout_editor_absoluteX="8dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="20sp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/child"
+                    android:paddingBottom="10dp"
+                    android:textColor="@color/colorPrimary"/>
+
+              <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+
+
+                  <com.google.android.material.textfield.TextInputLayout
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:textColorHint="@color/text_color_hint">
+
+                      <EditText
+                          android:id="@+id/input_min_age"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:focusableInTouchMode="true"
+                          android:hint="@string/minimum_age"
+                          android:textColor="@color/edit_text_color"
+                          android:singleLine="true"
+                          android:inputType="number"
+                          android:text="@={addCare.daycare_child_age_min_value}"
+                          android:textSize="14sp" />
+
+                  </com.google.android.material.textfield.TextInputLayout>
+
+                  <com.google.android.material.textfield.TextInputLayout
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:textColorHint="@color/text_color_hint">
+
+                      <EditText
+                          android:id="@+id/input_max_age"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:focusableInTouchMode="true"
+                          android:hint="@string/maximum_age"
+                          android:textColor="@color/edit_text_color"
+                          android:singleLine="true"
+                          android:inputType="number"
+                          android:text="@={addCare.daycare_child_age_max_value}"
+                          android:textSize="14sp" />
+
+                  </com.google.android.material.textfield.TextInputLayout>
+                  <androidx.appcompat.widget.AppCompatSpinner
+                      android:id="@+id/mini_age"
+                      style="@style/Widget.AppCompat.Spinner.Underlined"
+                      android:layout_width="0dp"
+                      android:layout_height="50dp"
+                      android:paddingBottom="10dp"
+                      android:layout_weight="1"
+                      android:layout_marginRight="-5dp"
+                      android:visibility="gone"
+                      android:paddingTop="10dp"
+                      android:paddingLeft="-5dp"
+                      android:entries="@array/type_name"
+                      android:singleLine="true" />
+
+
+                  <androidx.appcompat.widget.AppCompatSpinner
+                      android:id="@+id/max_age"
+                      style="@style/Widget.AppCompat.Spinner.Underlined"
+                      android:layout_width="0dp"
+                      android:layout_height="50dp"
+                      android:paddingBottom="10dp"
+                      android:layout_weight="1"
+                      android:layout_marginRight="-5dp"
+                      android:visibility="gone"
+                      android:paddingTop="10dp"
+                      android:paddingLeft="-5dp"
+                      android:entries="@array/type_name_two"
+                      android:singleLine="true" />
+
+              </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fees"
+                    android:paddingBottom="10dp"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/colorPrimary"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColorHint="@color/text_color_hint">
+
+                        <EditText
+                            android:id="@+id/input_min_budget"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusableInTouchMode="true"
+                            android:hint="@string/minimum_budget"
+                            android:textColor="@color/edit_text_color"
+                            android:singleLine="true"
+                            android:inputType="number"
+                            android:text="@={addCare.daycare_budget_min_value}"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/mini_budget"
+                        style="@style/Widget.AppCompat.Spinner.Underlined"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:visibility="gone"
+                        android:paddingBottom="10dp"
+                        android:layout_weight="1"
+                        android:layout_marginRight="-5dp"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="-5dp"
+                        android:entries="@array/budget_value"
+                        android:singleLine="true" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColorHint="@color/text_color_hint">
+
+                        <EditText
+                            android:id="@+id/input_max_budget"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusableInTouchMode="true"
+                            android:hint="@string/maximum_budget"
+                            android:textColor="@color/edit_text_color"
+                            android:singleLine="true"
+                            android:inputType="number"
+                            android:text="@={addCare.daycare_budget_max_value}"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+
+                        style="@style/Widget.AppCompat.Spinner.Underlined"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:paddingBottom="10dp"
+                        android:layout_weight="1"
+                        android:layout_marginRight="-5dp"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="-5dp"
+                        android:visibility="gone"
+                        android:entries="@array/budget_value_two"
+                        android:singleLine="true" />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cct_avail"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/colorPrimary"/>
+
+
+                <RadioGroup
+                    android:id="@+id/radio_cctv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/yes"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/yes"
+                        android:checked="true"
+                        android:layout_height="wrap_content"/>
+
+                    <RadioButton
+                        android:id="@+id/no"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no"/>
+
+                </RadioGroup>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/transport_avail"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/colorPrimary"/>
+
+                <RadioGroup
+                    android:id="@+id/radio_group_transport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/transport_yes"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/yes"
+                        android:checked="true"
+                        android:layout_height="wrap_content"/>
+
+                    <RadioButton
+                        android:id="@+id/transport_no"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no"/>
+
+                </RadioGroup>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/preschool_type"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/colorPrimary"/>
+
+
+                <RadioGroup
+                    android:id="@+id/radio_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/local"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/local"
+                        android:checked="true"
+                        android:layout_height="wrap_content"/>
+
+                    <RadioButton
+                        android:id="@+id/international"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/international"/>
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_next"
+            android:layout_width="fill_parent"
+            android:layout_height="55dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/button_background"
+            android:padding="12dp"
+            android:text="@string/next"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white" />
+
+
+    </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+
+</LinearLayout>
+
+</layout>

@@ -1,0 +1,175 @@
+<resources>
+    <string name="app_name">DayCare</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="top_stories">TOP STORIES</string>
+    <string name="day_care">DAY CARE</string>
+    <string name="loading">Please wait</string>
+    <string name="name">Name</string>
+    <string name="email_address">Email Address</string>
+    <string name="phone">Phone Number</string>
+    <string name="dob">Date of Birth</string>
+    <string name="gender">Gender</string>
+    <string name="password">Password</string>
+    <string name="terms_condition"><![CDATA[I accept the  terms & conditions]]></string>
+    <string name="sign_up">Sign Up</string>
+    <string name="already_sign">Already registered ? <u><b><font fgcolor='#008577'>Sign in</font></b></u></string>
+    <string name="reconfirm_password">Confirm Password</string>
+    <string name="name_empty">Name field is empty</string>
+    <string name="email_empty">Email field is empty</string>
+    <string name="phone_empty">Phone field is empty</string>
+    <string name="password_empty">Password field is empty</string>
+    <string name="accept_terms">Please accept the terms and condition</string>
+    <string name="not_valid_email">Enter email id not valid.</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="log_in">Log In</string>
+    <string name="new_user">New User? <u><b><font fgcolor='#008577'>Signup</font></b></u></string>
+    <string name="forgot_password_desc">Enter your email to receive an email to reset your password</string>
+    <string name="send">Send</string>
+    <string name="bookmark">Bookmarks</string>
+    <string name="overview">Overview</string>
+    <string name="overview_desc">Day-care centre, also called day nursery, nursery school, or crèche (French: “crib”), institution that provides supervision and care of infants and young children during the daytime, particularly so that their parents can hold jobs. Such institutions appeared in France about 1840, and the Société des Crèches was recognized by the French government in 1869.</string>
+    <string name="title_activity_day_care_list">Map</string>
+    <string name="title_activity_partner_home">PartnerHome</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_profile">My Profile</string>
+    <string name="contact">Phone Number</string>
+    <string name="email">Email</string>
+    <string name="update">Update</string>
+    <string name="next">Next</string>
+    <string name="day_care_name">DayCare Name</string>
+    <string name="address">Address</string>
+    <string name="short_description">Short  Description</string>
+    <string name="description">Description</string>
+    <string name="min_age">Child Minimum Age</string>
+    <string name="max_age">Child Maximum Age</string>
+    <string name="min_budget">Minimum Budget</string>
+    <string name="max_budget">Maximum Budget</string>
+    <string name="cctv_avail">CCTV Available</string>
+    <string name="meal_type">Meal Type</string>
+    <string name="transport_avail">Transport Availability</string>
+    <string name="day_care_type">Day Care Type</string>
+    <string name="social_login">Socail Login</string>
+    <string name="day_care_address">DayCare Address</string>
+    <string name="country">Country</string>
+    <string name="city">City</string>
+    <string name="day_care_description">Day Care Description</string>
+    <string name="shot_description">Short Description</string>
+    <string name="daycare_logo">Day Care Logo</string>
+    <string name="child">Child Age</string>
+    <string name="fees">Fees Budget</string>
+    <string name="cct_avail">CCTV Availability</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="preschool_type">Day Care Type</string>
+    <string name="local">Local</string>
+    <string name="international">International</string>
+    <string name="veg">Veg</string>
+    <string name="non_veg">Non-Veg</string>
+    <string name="both">Both</string>
+    <string name="none">None</string>
+    <string name="day_care_info">Day Care Contact Information</string>
+    <string name="label">Label</string>
+    <string name="alternate_contact">Alternate Contact</string>
+    <string name="day_care_open_hour">Day Care Timing</string>
+    <string name="open">Open Time</string>
+    <string name="close">Close Time</string>
+    <string name="subject_list">Additional Information</string>
+    <string name="title">Title</string>
+    <string name="care_name_empty">Add Day Care Name</string>
+    <string name="address_empty">Add Address</string>
+    <string name="city_empty">Add City</string>
+    <string name="country_empty">Add Country</string>
+    <string name="short_empty">Add Short Description</string>
+    <string name="description_empty">Add Description</string>
+    <string name="minimum_age">Minimum Age</string>
+    <string name="maximum_age">Maximum Age</string>
+    <string name="min_age_empty">Add Child Minimum Age</string>
+    <string name="max_age_empty">Add Child Maximum Age</string>
+    <string name="min_budget_empty">Add Minimum Budget </string>
+    <string name="max_budget_empty">Add Maximum Budget</string>
+    <string name="minimum_budget">Minimum Fees</string>
+    <string name="maximum_budget">Maximum Fees</string>
+    <string name="mini_fee_empty">Add Minimum Fees</string>
+    <string name="max_fee_empty">Add Maximum Fees</string>
+    <string name="meal_type_empty">Add Meal Type</string>
+    <string name="meal_name_empty">Add Meal Name</string>
+    <string name="meal_description_empty">Add Meal Description</string>
+    <string name="contact_label_empty">Add Contact Label</string>
+    <string name="contact_name_empty">Add Contact Name</string>
+    <string name="contact_email_empty">Add Contact Email</string>
+    <string name="contact_phone_empty">Add Phone</string>
+    <string name="contact_alternate_empty">Add Alternate Contact</string>
+    <string name="open_time_empty">Add Opening Time</string>
+    <string name="close_time_empty">Add Closing Time</string>
+    <string name="time_description_empty">Add Time Description</string>
+    <string name="subject_name_empty">Add Aditional Name</string>
+    <string name="subject_description_empty">Add Additional Description</string>
+    <string name="title_empty">Add Tittle</string>
+    <string name="image_empty">Upload Image</string>
+    <string name="banner_add">Gallery Image Added Successfuly</string>
+    <string name="desc_more">"Do you want to add more day care gallery. "</string>
+    <string name="add_day_care">Add Day Care</string>
+    <string name="show_day_care">Show Day Care</string>
+    <string name="day_care_active">Day Care Active/Deactive </string>
+    <string name="profile">My Profile</string>
+    <string name="detail">Day Care Detail</string>
+    <string name="child_age">Child Age:</string>
+    <string name="fees_budget">"Fees "</string>
+    <string name="care_type">Day Care Type</string>
+    <string name="timing_txt">Day Care Timing</string>
+    <string name="contact_detail">Contact Detail</string>
+    <string name="lable">Label</string>
+    <string name="contact_person">Contact Person</string>
+    <string name="edit_gallery">Edit Gallery</string>
+    <string name="edit_activity">Edit Activity</string>
+    <string name="edit_detail">edit profile</string>
+
+
+    <string-array name="type_name">
+        <item>Child Minimum Age</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="type_name_two">
+        <item>Child Maximum Age</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+
+    <string-array name="budget_value">
+        <item>Minimum Budget</item>
+        <item>2k</item>
+        <item>3k</item>
+        <item>4k</item>
+        <item>5k</item>
+    </string-array>
+
+    <string-array name="budget_value_two">
+        <item>Maximum Budget</item>
+        <item>2k</item>
+        <item>3k</item>
+        <item>4k</item>
+        <item>5k</item>
+    </string-array>
+
+
+    <string-array name="meal_type_ref">
+        <item>Veg</item>
+        <item>Non-Veg</item>
+        <item>Both</item>
+        <item>Other</item>
+        <item>None</item>
+    </string-array>
+
+
+</resources>
