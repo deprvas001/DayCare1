@@ -8,6 +8,11 @@ import com.development.daycare.model.addCareActivity.AddActivityRequest;
 import com.development.daycare.model.addCareActivity.AddActivityResponse;
 import com.development.daycare.model.addDay.AddCareRequest;
 import com.development.daycare.model.addDay.AddCareResponse;
+import com.development.daycare.model.changePassword.ChangePasswordRequest;
+import com.development.daycare.model.changePassword.PasswordResponse;
+import com.development.daycare.model.dayCareList.CareListResponse;
+import com.development.daycare.model.dayCareList.DayCareListPost;
+import com.development.daycare.model.filter.FilterPostRequest;
 import com.development.daycare.model.forgotModel.ForgotRequestModel;
 import com.development.daycare.model.homeModel.HomeResponse;
 import com.development.daycare.model.loginModel.LoginRequest;
@@ -21,6 +26,7 @@ import com.development.daycare.model.signupModel.UserSignupRequest;
 
 import java.util.Map;
 
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -64,6 +70,11 @@ public interface ShipmentApi {
             @HeaderMap Map<String,String> headers,
             @Body AddCareRequest request);
 
+    @POST("changePassword")
+    Call<PasswordResponse> changePassword(
+            @HeaderMap Map<String,String> headers,
+            @Body ChangePasswordRequest request);
+
     @POST("postDaycareBanner")
     Call<AddBannerResponse> addBanner(
             @HeaderMap Map<String,String> headers,
@@ -87,10 +98,30 @@ public interface ShipmentApi {
             @Query("per_page") String  per_page,
             @Query("daycare_id") String  id);
 
+    @GET("updateDayCareStatus")
+    Call<BannerListResponse> publishDayCare(
+            @HeaderMap Map<String,String> headers,
+            @Query("daycare_id") String  id,
+            @Query("daycare_status") String  status);
+
+
     @GET("getDayCareActivityListData")
     Call<ActivityListResponse> getActivityList(
             @HeaderMap Map<String,String> headers,
             @Query("offset") String  offset,
             @Query("per_page") String  per_page,
             @Query("daycare_id") String  id);
+
+
+    @POST("getDayCareNearByList")
+    Single<ShowCareResponse> getDayCareList(@HeaderMap Map<String,String> headers,
+                                            @Body DayCareListPost post);
+
+    @POST("getDayCareSearch")
+    Single<ShowCareResponse> getSearchCare(@HeaderMap Map<String,String> headers,
+                                            @Body DayCareListPost post);
+
+    @POST("getDayCareFilterList")
+    Single<ShowCareResponse> getFilterList(@HeaderMap Map<String,String> headers,
+                                           @Body FilterPostRequest post);
 }

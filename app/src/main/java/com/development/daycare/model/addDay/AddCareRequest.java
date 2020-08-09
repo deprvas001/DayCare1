@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class AddCareRequest implements Parcelable {
+    private String daycare_id;
     private String daycare_name;
     private String daycare_address;
     private String daycare_latitude;
@@ -39,6 +40,7 @@ public class AddCareRequest implements Parcelable {
 
 
     protected AddCareRequest(Parcel in) {
+        daycare_id = in.readString();
         daycare_name = in.readString();
         daycare_address = in.readString();
         daycare_latitude = in.readString();
@@ -229,8 +231,17 @@ public class AddCareRequest implements Parcelable {
         this.subject_list = subject_list;
     }
 
+    public String getDaycare_id() {
+        return daycare_id;
+    }
+
+    public void setDaycare_id(String daycare_id) {
+        this.daycare_id = daycare_id;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(daycare_id);
         parcel.writeString(daycare_name);
         parcel.writeString(daycare_address);
         parcel.writeString(daycare_latitude);

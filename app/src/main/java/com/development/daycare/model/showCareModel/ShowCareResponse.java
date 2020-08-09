@@ -1,8 +1,10 @@
 package com.development.daycare.model.showCareModel;
 
+import java.util.List;
+
 public class ShowCareResponse {
  private int status;
- private ShowCareData data;
+ private List<ShowCareData> data;
 
     public int getStatus() {
         return status;
@@ -12,11 +14,11 @@ public class ShowCareResponse {
         this.status = status;
     }
 
-    public ShowCareData getData() {
+    public List<ShowCareData> getData() {
         return data;
     }
 
-    public void setData(ShowCareData data) {
+    public void setData(List<ShowCareData> data) {
         this.data = data;
     }
 }

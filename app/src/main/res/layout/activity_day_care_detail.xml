@@ -12,18 +12,45 @@
       android:layout_height="wrap_content"
       >
 
-   <ImageView
-       android:id="@+id/imageView"
-       android:layout_width="match_parent"
-       android:layout_height="200dp"
-       android:scaleType="fitXY"
-       android:src="@drawable/capture"/>
+      <androidx.cardview.widget.CardView
+          android:id="@+id/card_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="15dp"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          app:cardCornerRadius="5dp"
+          app:cardElevation="10dp">
+
+          <com.smarteist.autoimageslider.SliderView
+              android:id="@+id/imageSlider"
+              android:layout_width="match_parent"
+              android:layout_height="200dp"
+              android:scaleType="centerCrop"
+              app:sliderAnimationDuration="600"
+              app:sliderAutoCycleDirection="back_and_forth"
+              app:sliderAutoCycleEnabled="true"
+              app:sliderCircularHandlerEnabled="true"
+              app:sliderIndicatorAnimationDuration="600"
+              app:sliderIndicatorGravity="center_horizontal|bottom"
+              app:sliderIndicatorMargin="15dp"
+              app:sliderIndicatorOrientation="horizontal"
+              app:sliderIndicatorPadding="3dp"
+              app:sliderIndicatorRadius="2dp"
+              app:sliderIndicatorSelectedColor="#5A5A5A"
+              app:sliderIndicatorUnselectedColor="#FFF"
+              app:sliderScrollTimeInSec="4"
+              app:sliderStartAutoCycle="true" />
+
+      </androidx.cardview.widget.CardView>
+
+
 
       <TextView
           android:id="@+id/day_care_name"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_below="@id/imageView"
+          android:layout_below="@id/card_view"
           android:layout_marginTop="10dp"
           android:layout_marginLeft="15dp"
           android:layout_marginRight="15dp"
@@ -45,13 +72,14 @@
               android:layout_width="0dp"
               android:layout_height="wrap_content"
               android:layout_weight="1"
-              android:textSize="16sp" />
+              />
 
           <com.google.android.material.floatingactionbutton.FloatingActionButton
               android:id="@+id/fab"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="bottom|end"
+              android:padding="10dp"
               app:srcCompat="@drawable/ic_location_on_black_24dp" />
 
       </LinearLayout>
@@ -62,6 +90,7 @@
           android:layout_height="wrap_content"
           android:layout_marginLeft="15dp"
           android:layout_marginRight="15dp"
+
           android:text="@string/overview"
           android:textSize="15sp"
           android:textStyle="bold"
@@ -84,6 +113,7 @@
           android:layout_height="wrap_content"
           android:orientation="horizontal"
           android:layout_marginLeft="15dp"
+          android:layout_marginTop="15dp"
           android:layout_marginRight="15dp"
           android:layout_below="@id/overview_desc">
 
@@ -103,9 +133,10 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:text="@string/edit_detail"
-              android:drawableLeft="@drawable/ic_edit_black_24dp"
+              android:gravity="center_vertical"
+              android:drawableLeft="@drawable/ic_edit"
               android:drawableTint="@color/colorPrimary"
-              android:drawablePadding="10dp"
+              android:drawablePadding="5dp"
               android:layout_gravity="center_vertical"
               android:textColor="@color/colorPrimary"/>
 
@@ -545,13 +576,29 @@
               android:id="@+id/btn_activity"
               android:layout_width="fill_parent"
               android:layout_height="55dp"
-              android:layout_margin="20dp"
+              android:layout_marginLeft="20dp"
+              android:layout_marginRight="20dp"
+              android:layout_marginBottom="10dp"
               android:background="@drawable/button_background"
               android:padding="12dp"
               android:text="@string/edit_activity"
               android:textAllCaps="true"
               android:textColor="@android:color/white" />
 
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btn_publish"
+              android:layout_width="fill_parent"
+              android:layout_height="55dp"
+              android:layout_marginTop="10dp"
+              android:layout_marginBottom="20dp"
+              android:layout_marginLeft="20dp"
+              android:layout_marginRight="20dp"
+              android:background="@drawable/button_background"
+              android:padding="12dp"
+              android:visibility="gone"
+              android:text="@string/publish"
+              android:textAllCaps="true"
+              android:textColor="@android:color/white" />
       </LinearLayout>
 
 

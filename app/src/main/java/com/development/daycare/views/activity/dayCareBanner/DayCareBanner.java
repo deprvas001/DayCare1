@@ -31,6 +31,7 @@ import com.development.daycare.model.addBanner.AddBannerApiResponse;
 import com.development.daycare.model.addBanner.AddBannerRequest;
 import com.development.daycare.model.addDay.AddCareApiResponse;
 import com.development.daycare.model.showCareModel.ShowCareData;
+import com.development.daycare.session.SessionManager;
 import com.development.daycare.views.activity.BaseActivity;
 import com.development.daycare.views.activity.ImagePickerScreen;
 import com.development.daycare.views.activity.dayCareAdd.AddCareViewModel;
@@ -50,6 +51,9 @@ public class DayCareBanner extends BaseActivity implements View.OnClickListener 
     AddBannerRequest bannerRequest = new AddBannerRequest();
     AddBannerViewModel viewModel;
     ShowCareData careData;
+    SessionManager session;
+    String token,day_care_id;
+    Boolean isShowCare = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +64,10 @@ public class DayCareBanner extends BaseActivity implements View.OnClickListener 
 
     private void checkIntent() {
         if (getIntent() != null) {
-         String day_care_id = getIntent().getExtras().getString(ApiConstant.DAYCARE_ID);
+           day_care_id = getIntent().getExtras().getString(ApiConstant.DAYCARE_ID);
+         if(getIntent().getExtras().containsKey(ApiConstant.DAY_CARE_SHOW)){
+             isShowCare = getIntent().getExtras().getBoolean(ApiConstant.DAY_CARE_SHOW);
+         }
          bannerRequest.setDaycare_id(day_care_id);
 
          bannerBinding.setAddBanner(bannerRequest);
@@ -90,7 +97,7 @@ public class DayCareBanner extends BaseActivity implements View.OnClickListener 
                  Toast.makeText(this, getString(R.string.image_empty), Toast.LENGTH_SHORT).show();
                   break;
                  }else{
-                     addBanner();
+                    getSession();
                  }
         }
 
@@ -155,7 +162,7 @@ public class DayCareBanner extends BaseActivity implements View.OnClickListener 
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
          String  image_string = Base64.encodeToString(byteArray, Base64.DEFAULT);
-        bannerRequest.setDaycare_banner_url(image_string);
+        bannerRequest.setDaycare_banner_url("data:image/jpeg;base64,"+image_string);
 
     }
 
@@ -169,7 +176,7 @@ public class DayCareBanner extends BaseActivity implements View.OnClickListener 
         headers.put(ApiConstant.USER_TYPE, ApiConstant.USER_TYPE_DAYCARE);
         headers.put(ApiConstant.USER_DEVICE_TYPE, ApiConstant.USER_DEVICE_TYPE_VALUE);
         headers.put(ApiConstant.USER_DEVICE_TOKEN, ApiConstant.USER_DEVICE_TOKEN_VALUE);
-        headers.put(ApiConstant.AUTHENTICATE_TOKEN, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3ZWJmdW1lYXBwLmNvbSIsImF1ZCI6IldlYmZ1bWUgSmFzb24gQXBwIiwiaWF0IjoxNTg5MTI2MzIzLCJuYmYiOjE1ODkxMjYzMjMsImV4cCI6MTU5MDMzNTkyMywiZGF0YSI6eyJ1c2VyX3R5cGUiOiJEQVlDQVJFIiwidXNlcl9kZXZpY2VfdHlwZSI6IkFETlJPSUQiLCJ1c2VyX2RldmljZV90b2tlbiI6IjIzNDIzNGR2ZGZkZnNkZnNkZiIsIlNvdXJjZXMiOiJBUFAiLCJ1c2VyX25hbWUiOiIxMjFAZ21haWwuY29tIiwidXNlcl9pZCI6Ijg5IiwidXNlcl9sb2dfaWQiOjQzfX0.oZHnTt1fC75yB1V_Q7XoWpPKmXVBMIRtfrJJ9bpwVtA");
+        headers.put(ApiConstant.AUTHENTICATE_TOKEN,token );
 
 
         viewModel = ViewModelProviders.of(this).get(AddBannerViewModel.class);
@@ -214,26 +221,61 @@ public class DayCareBanner extends BaseActivity implements View.OnClickListener 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
 
+
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(DayCareBanner.this, DayCareBanner.class);
-                startActivity(i);
-                alertDialog.dismiss();
-                finish();
+                if(isShowCare){
+                    alertDialog.dismiss();
+                   // finish();
+                }else{
+                    Intent i = new Intent(DayCareBanner.this, DayCareBanner.class);
+                    i.putExtra(ApiConstant.DAYCARE_ID,bannerRequest.getDaycare_id());
+                    startActivity(i);
+                    alertDialog.dismiss();
+                    finish();
+                }
+
             }
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertDialog.dismiss();
-                showCareActivity();
+                if(isShowCare){
+                    alertDialog.dismiss();
+                    Intent intent = new Intent(DayCareBanner.this, ShowBannerList.class);
+                    intent.putExtra(ApiConstant.DAYCARE_ID,day_care_id);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP );
+                    startActivity(intent);
+                }else{
+                    alertDialog.dismiss();
+                    showCareActivity();
+                }
+
             }
         });
 
 
         //finally creating the alert dialog and displaying it
+
+    }
+
+    private void getSession(){
+        session = new SessionManager(this);
+        // get user data from session
+        HashMap<String, String> user = session.getUserDetails();
+
+        // name
+        String name = user.get(SessionManager.KEY_NAME);
+
+        // email
+        String email = user.get(SessionManager.KEY_EMAIL);
+        String image = user.get(SessionManager.KEY_IMAGE);
+        token = user.get(SessionManager.KEY_TOKEN);
+        String phone = user.get(SessionManager.KEY_PHONE);
+
+        addBanner();
 
     }
 }

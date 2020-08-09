@@ -13,6 +13,10 @@ public class HomeSlider implements Parcelable {
     private String end_date;
     private String url;
 
+    public HomeSlider(){
+
+    }
+
     protected HomeSlider(Parcel in) {
         id = in.readString();
         title = in.readString();

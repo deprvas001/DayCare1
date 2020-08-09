@@ -27,4 +27,8 @@ public class AddBannerViewModel  extends AndroidViewModel {
     public MutableLiveData<BannerListApiResponse> getBannerList(Context context, Map<String,String> headers, String offset, String type, String day_care_id) {
         return AddBannerRepository.getInstance().getBannerList(context, headers, offset,type,day_care_id);
     }
+
+    public MutableLiveData<BannerListApiResponse> publishDayCare(Context context, Map<String,String> headers,String day_care_id, String status) {
+        return AddBannerRepository.getInstance().publishDayCare(context, headers,day_care_id,status);
+    }
 }

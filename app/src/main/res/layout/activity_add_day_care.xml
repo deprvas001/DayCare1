@@ -92,13 +92,16 @@
                         android:layout_height="wrap_content"
                         android:text="@string/daycare_logo"
                         android:textStyle="bold"
+                        android:layout_weight="1"
                         android:textColor="@color/text_color_hint"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                    <ImageView
+                        android:id="@+id/upload_image"
+                        android:layout_width="80dp"
                         android:gravity="right"
-                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:src="@drawable/choose_image"
+                        android:layout_height="60dp"
                         android:text="Upload"
                         android:textColor="@color/colorPrimary"/>
 
@@ -273,10 +276,11 @@
                           android:id="@+id/input_min_age"
                           android:layout_width="match_parent"
                           android:layout_height="wrap_content"
-                          android:focusableInTouchMode="true"
-                          android:hint="@string/minimum_age"
                           android:textColor="@color/edit_text_color"
+                          android:hint="@string/minimum_age"
                           android:singleLine="true"
+                          android:clickable="true"
+                          android:focusable="false"
                           android:inputType="number"
                           android:text="@={addCare.daycare_child_age_min_value}"
                           android:textSize="14sp" />
@@ -293,9 +297,10 @@
                           android:id="@+id/input_max_age"
                           android:layout_width="match_parent"
                           android:layout_height="wrap_content"
-                          android:focusableInTouchMode="true"
                           android:hint="@string/maximum_age"
                           android:textColor="@color/edit_text_color"
+                          android:focusable="false"
+                          android:clickable="true"
                           android:singleLine="true"
                           android:inputType="number"
                           android:text="@={addCare.daycare_child_age_max_value}"
@@ -357,7 +362,6 @@
                             android:id="@+id/input_min_budget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:focusableInTouchMode="true"
                             android:hint="@string/minimum_budget"
                             android:textColor="@color/edit_text_color"
                             android:singleLine="true"
@@ -391,7 +395,6 @@
                             android:id="@+id/input_max_budget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:focusableInTouchMode="true"
                             android:hint="@string/maximum_budget"
                             android:textColor="@color/edit_text_color"
                             android:singleLine="true"

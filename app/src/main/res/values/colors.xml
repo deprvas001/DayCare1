@@ -8,4 +8,6 @@
     <color name="line">#dddddd</color>
     <color name="text_color_hint">#959595</color>
     <color name="edit_text_color">#1D1500</color>
+    <color name="red">#F44336</color>
+    <color name="green">#4CAF50</color>
 </resources>

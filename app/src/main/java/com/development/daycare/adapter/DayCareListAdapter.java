@@ -62,10 +62,6 @@ public class DayCareListAdapter extends RecyclerView.Adapter<DayCareListAdapter.
         BookmarkData bookmark = bookmarkList.get(position);
         holder.name.setText(bookmark.getName());
         holder.age.setText(bookmark.getAge());
-//        holder.address.setText(bookmark.getAddress());
-//        holder.resident.setText(bookmark.getCountry());
-        /*holder.city.setText(bookmark.getCity_name());
-        holder.university.setText(bookmark.getUniversity_name());*/
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

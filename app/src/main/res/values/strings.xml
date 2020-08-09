@@ -127,7 +127,33 @@
     <string name="edit_gallery">Edit Gallery</string>
     <string name="edit_activity">Edit Activity</string>
     <string name="edit_detail">edit profile</string>
+    <string name="change_password">Change Password</string>
+    <string name="old_password">Enter Old Password</string>
+    <string name="new_password">Enter New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="submit">SUBMIT</string>
+    <string name="profile_empty">Upload Profile Image</string>
+    <string name="logo_empty">Upload Logo</string>
+    <string name="add_more_banner">Add More Banner</string>
+    <string name="add_more_activity">Add More Activity</string>
+    <string name="old_password_empty">Enter Old Password</string>
+    <string name="new_password_empty">Enter New Password</string>
+    <string name="not_same">New Password and Confirm Password should match</string>
+    <string name="invalid_email">"Invalid Email Id "</string>
+    <string name="title_add">Add Day Care</string>
+    <string name="title_edit">Edit</string>
+    <string name="show_activity">Show Activity</string>
+    <string name="search">Search</string>
+    <string name="done">Done</string>
 
+
+    <string name="title_activity_marker_screen">Map</string>
+
+    <string name="title_activity_user_location_map">Map</string>
+
+
+    <string name="title_activity_day_care_marker">Map</string>
+    <string name="publish">Publish</string>
 
     <string-array name="type_name">
         <item>Child Minimum Age</item>
@@ -137,6 +163,7 @@
         <item>5</item>
     </string-array>
 
+
     <string-array name="type_name_two">
         <item>Child Maximum Age</item>
         <item>2</item>
@@ -144,8 +171,6 @@
         <item>4</item>
         <item>5</item>
     </string-array>
-
-
     <string-array name="budget_value">
         <item>Minimum Budget</item>
         <item>2k</item>
@@ -153,7 +178,6 @@
         <item>4k</item>
         <item>5k</item>
     </string-array>
-
     <string-array name="budget_value_two">
         <item>Maximum Budget</item>
         <item>2k</item>
@@ -161,8 +185,6 @@
         <item>4k</item>
         <item>5k</item>
     </string-array>
-
-
     <string-array name="meal_type_ref">
         <item>Veg</item>
         <item>Non-Veg</item>

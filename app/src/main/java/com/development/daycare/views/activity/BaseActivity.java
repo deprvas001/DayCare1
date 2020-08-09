@@ -80,4 +80,8 @@ public class BaseActivity extends AppCompatActivity {
         return  date;
 
     }
+
+    public void showAgeDialog(){
+
+    }
 }

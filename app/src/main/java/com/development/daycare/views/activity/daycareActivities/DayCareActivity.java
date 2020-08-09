@@ -30,11 +30,15 @@ import com.development.daycare.databinding.ActivityDayCareBinding;
 import com.development.daycare.model.addBanner.AddBannerApiResponse;
 import com.development.daycare.model.addCareActivity.AddActivityApiResponse;
 import com.development.daycare.model.addCareActivity.AddActivityRequest;
+import com.development.daycare.session.SessionManager;
 import com.development.daycare.views.activity.BaseActivity;
 import com.development.daycare.views.activity.ImagePickerScreen;
 import com.development.daycare.views.activity.PartnerCareHome;
+import com.development.daycare.views.activity.dayCareAdd.AddDayCareSecond;
 import com.development.daycare.views.activity.dayCareBanner.AddBannerViewModel;
 import com.development.daycare.views.activity.dayCareBanner.DayCareBanner;
+import com.development.daycare.views.activity.dayCareBanner.ShowBannerList;
+import com.development.daycare.views.activity.daycarelist.DayCareList;
 import com.nguyenhoanglam.imagepicker.model.Image;
 
 import java.io.ByteArrayOutputStream;
@@ -47,6 +51,9 @@ public class DayCareActivity extends BaseActivity implements View.OnClickListene
     ActivityDayCareBinding dayCareBinding;
     AddActivityRequest addActivityRequest = new AddActivityRequest();
     CareViewModel viewModel;
+    SessionManager session;
+    String token,day_care_id;
+    Boolean isShowCare= false;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +64,12 @@ public class DayCareActivity extends BaseActivity implements View.OnClickListene
 
     private void checkIntent() {
         if (getIntent() != null) {
-            String day_care_id = getIntent().getExtras().getString(ApiConstant.DAYCARE_ID);
+             day_care_id = getIntent().getExtras().getString(ApiConstant.DAYCARE_ID);
+
+            if(getIntent().getExtras().containsKey(ApiConstant.DAY_CARE_SHOW)){
+                isShowCare = getIntent().getExtras().getBoolean(ApiConstant.DAY_CARE_SHOW);
+            }
+
             addActivityRequest.setDaycare_id(day_care_id);
 
             dayCareBinding.setAddActivity(addActivityRequest);
@@ -87,7 +99,7 @@ public class DayCareActivity extends BaseActivity implements View.OnClickListene
                     Toast.makeText(this, getString(R.string.image_empty), Toast.LENGTH_SHORT).show();
                     break;
                 }else{
-                   addCareActivity();
+                   getSession();
                 }
                 break;
 
@@ -110,22 +122,21 @@ public class DayCareActivity extends BaseActivity implements View.OnClickListene
                 if (images.size() > 0) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         Uri uri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, String.valueOf(images.get(0).getId()));
-                        RequestOptions options = new RequestOptions().placeholder(R.drawable.noimage)
-                                .error(R.drawable.noimage);
 
-                        Glide.with(this)
-                                .load(uri)
-                                .apply(options)
-                                .transition(DrawableTransitionOptions.withCrossFade())
-                                .into(dayCareBinding.uploadImage);
-                        addActivityRequest.setDaycare_activity_image("Testing image url");
+                        BitmapFactory.Options options = new BitmapFactory.Options();
 
-                        try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                            convetBitmapString(bitmap);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        // downsizing image as it throws OutOfMemory Exception for larger
+                        // images
+                        //  options.inSampleSize = calculteInSampleSize(option,500,500)
+                        options.inSampleSize = 2;
+
+                        String path=  uri.getPath();
+
+                        Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+                        dayCareBinding.uploadImage.setImageBitmap(bitmap);
+
+                        convetBitmapString(bitmap);
+
 
                     } else {
 
@@ -156,7 +167,7 @@ public class DayCareActivity extends BaseActivity implements View.OnClickListene
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         String  image_string = Base64.encodeToString(byteArray, Base64.DEFAULT);
-        addActivityRequest.setDaycare_activity_image(image_string);
+        addActivityRequest.setDaycare_activity_image("data:image/jpeg;base64,"+image_string);
     }
 
     private void addCareActivity(){
@@ -168,7 +179,7 @@ public class DayCareActivity extends BaseActivity implements View.OnClickListene
         headers.put(ApiConstant.USER_TYPE, ApiConstant.USER_TYPE_DAYCARE);
         headers.put(ApiConstant.USER_DEVICE_TYPE, ApiConstant.USER_DEVICE_TYPE_VALUE);
         headers.put(ApiConstant.USER_DEVICE_TOKEN, ApiConstant.USER_DEVICE_TOKEN_VALUE);
-        headers.put(ApiConstant.AUTHENTICATE_TOKEN, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3ZWJmdW1lYXBwLmNvbSIsImF1ZCI6IldlYmZ1bWUgSmFzb24gQXBwIiwiaWF0IjoxNTg5MTI2MzIzLCJuYmYiOjE1ODkxMjYzMjMsImV4cCI6MTU5MDMzNTkyMywiZGF0YSI6eyJ1c2VyX3R5cGUiOiJEQVlDQVJFIiwidXNlcl9kZXZpY2VfdHlwZSI6IkFETlJPSUQiLCJ1c2VyX2RldmljZV90b2tlbiI6IjIzNDIzNGR2ZGZkZnNkZnNkZiIsIlNvdXJjZXMiOiJBUFAiLCJ1c2VyX25hbWUiOiIxMjFAZ21haWwuY29tIiwidXNlcl9pZCI6Ijg5IiwidXNlcl9sb2dfaWQiOjQzfX0.oZHnTt1fC75yB1V_Q7XoWpPKmXVBMIRtfrJJ9bpwVtA");
+        headers.put(ApiConstant.AUTHENTICATE_TOKEN, token);
 
 
         viewModel = ViewModelProviders.of(this).get(CareViewModel.class);
@@ -208,21 +219,36 @@ public class DayCareActivity extends BaseActivity implements View.OnClickListene
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(DayCareActivity.this, DayCareActivity.class);
-                startActivity(i);
-                alertDialog.dismiss();
-                finish();
+                if(isShowCare){
+                    alertDialog.dismiss();
+
+                }else{
+                    Intent i = new Intent(DayCareActivity.this, DayCareActivity.class);
+                    i.putExtra(ApiConstant.DAYCARE_ID,addActivityRequest.getDaycare_id());
+                    startActivity(i);
+                    alertDialog.dismiss();
+                    finish();
+                }
+
             }
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertDialog.dismiss();
-                showHomeScreen();
+                if(isShowCare){
+                    alertDialog.dismiss();
+                    Intent intent = new Intent(DayCareActivity.this, CareActivityList.class);
+                    intent.putExtra(ApiConstant.DAYCARE_ID,day_care_id);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP );
+                    startActivity(intent);
+
+                }else{
+                    alertDialog.dismiss();
+                    showHomeScreen();
+                }
             }
         });
-
 
         //finally creating the alert dialog and displaying it
 
@@ -230,9 +256,24 @@ public class DayCareActivity extends BaseActivity implements View.OnClickListene
 
     private void showHomeScreen(){
         Intent i = new Intent(DayCareActivity.this, PartnerCareHome.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
+    }
+
+    private void getSession(){
+        session = new SessionManager(this);
+        // get user data from session
+        HashMap<String, String> user = session.getUserDetails();
+
+        // name
+        String name = user.get(SessionManager.KEY_NAME);
+
+        // email
+        String email = user.get(SessionManager.KEY_EMAIL);
+        String image = user.get(SessionManager.KEY_IMAGE);
+        token = user.get(SessionManager.KEY_TOKEN);
+        String phone = user.get(SessionManager.KEY_PHONE);
+
+        addCareActivity();
     }
 }

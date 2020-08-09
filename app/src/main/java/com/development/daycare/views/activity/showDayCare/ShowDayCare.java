@@ -8,22 +8,30 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.development.daycare.R;
 import com.development.daycare.adapter.BookmarkAdapter;
+import com.development.daycare.adapter.HomeSlideAdapter;
 import com.development.daycare.adapter.ShowCareAdapter;
 import com.development.daycare.constant.ApiConstant;
 import com.development.daycare.databinding.ActivityShowDayCareBinding;
 import com.development.daycare.model.BookmarkData;
+import com.development.daycare.model.homeModel.HomeSlider;
+import com.development.daycare.model.homeModel.MenuList;
 import com.development.daycare.model.showCareModel.ShowCareApiResponse;
 import com.development.daycare.model.showCareModel.ShowCareData;
+import com.development.daycare.session.SessionManager;
 import com.development.daycare.views.activity.BaseActivity;
 import com.development.daycare.views.activity.dayCareAdd.AddCareViewModel;
 import com.development.daycare.views.activity.dayCareAdd.AddDayCareSecond;
 import com.development.daycare.views.activity.daycareActivities.CareViewModel;
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,8 +44,8 @@ public class ShowDayCare extends BaseActivity implements View.OnClickListener {
     List<ShowCareData> careDataList = new ArrayList<>();
     ShowCareAdapter adapter;
     RecyclerView.LayoutManager mLayoutManager;
-
-
+    SessionManager session;
+   String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +57,7 @@ public class ShowDayCare extends BaseActivity implements View.OnClickListener {
     private void setClickListener() {
         dayCareBinding.back.setOnClickListener(this);
         // getSession();
-        getDayCareList();
+        getSession();
     }
 
     @Override
@@ -68,7 +76,7 @@ public class ShowDayCare extends BaseActivity implements View.OnClickListener {
         headers.put(ApiConstant.USER_TYPE, ApiConstant.USER_TYPE_DAYCARE);
         headers.put(ApiConstant.USER_DEVICE_TYPE, ApiConstant.USER_DEVICE_TYPE_VALUE);
         headers.put(ApiConstant.USER_DEVICE_TOKEN, ApiConstant.USER_DEVICE_TOKEN_VALUE);
-        headers.put(ApiConstant.AUTHENTICATE_TOKEN, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3ZWJmdW1lYXBwLmNvbSIsImF1ZCI6IldlYmZ1bWUgSmFzb24gQXBwIiwiaWF0IjoxNTg5MzU0MTE0LCJuYmYiOjE1ODkzNTQxMTQsImV4cCI6MTU5MDU2MzcxNCwiZGF0YSI6eyJ1c2VyX3R5cGUiOiJEQVlDQVJFIiwidXNlcl9kZXZpY2VfdHlwZSI6IkFETlJPSUQiLCJ1c2VyX2RldmljZV90b2tlbiI6IjIzNDIzNGR2ZGZkZnNkZnNkZiIsIlNvdXJjZXMiOiJBUFAiLCJ1c2VyX25hbWUiOiIxMTExQGdtYWlsLmNvbSIsInVzZXJfaWQiOiI5MCIsInVzZXJfbG9nX2lkIjo0NX19.j5-31UujgKd01b9OtvXAakLqbn-y9CVaqImnDU2OQrA");
+        headers.put(ApiConstant.AUTHENTICATE_TOKEN, token);
 
 
         viewModel = ViewModelProviders.of(this).get(ShowCareViewModel.class);
@@ -78,8 +86,7 @@ public class ShowDayCare extends BaseActivity implements View.OnClickListener {
                 hideProgressDialog();
                 if (apiResponse.response != null) {
                     if (apiResponse.getResponse().getStatus() == 1) {
-                        careDataList.add(apiResponse.getResponse().getData());
-                        setRecyclerview(careDataList);
+                        setRecyclerview(apiResponse.getResponse().getData());
                     }
                 } else {
                     // call failed.
@@ -97,5 +104,24 @@ public class ShowDayCare extends BaseActivity implements View.OnClickListener {
         dayCareBinding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         dayCareBinding.recyclerView.setAdapter(adapter);
     }
+
+    private void getSession() {
+        session = new SessionManager(this);
+        // get user data from session
+        HashMap<String, String> user = session.getUserDetails();
+
+        // name
+        String name = user.get(SessionManager.KEY_NAME);
+
+        // email
+        String email = user.get(SessionManager.KEY_EMAIL);
+        String image = user.get(SessionManager.KEY_IMAGE);
+        token = user.get(SessionManager.KEY_TOKEN);
+        String phone = user.get(SessionManager.KEY_PHONE);
+
+        getDayCareList();
+
+    }
+
 
 }

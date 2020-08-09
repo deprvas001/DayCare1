@@ -99,6 +99,42 @@ public class AddBannerRepository {
                     }
                 }
             }
+            
+            @Override
+            public void onFailure(Call<BannerListResponse> call, Throwable t) {
+                responseLiveData.setValue(new BannerListApiResponse(t));
+            }
+        });
+
+        return   responseLiveData;
+    }
+
+    public MutableLiveData<BannerListApiResponse> publishDayCare(Context context, Map<String,String> headers, String id, String status){
+        final MutableLiveData<BannerListApiResponse> responseLiveData =new MutableLiveData<>();
+
+        shipmentApi.publishDayCare(headers,id,status).enqueue(new Callback<BannerListResponse>() {
+            @Override
+            public void onResponse(Call<BannerListResponse> call, Response<BannerListResponse> response) {
+                if(response.code() == 401 || response.code() == 400 || response.code() == 500){
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        String message = jObjError.getString("message");
+                        int status = jObjError.getInt("status");
+                        responseLiveData.setValue(new BannerListApiResponse(message,status,response.code()));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else {
+                    if(response.isSuccessful()){
+                        responseLiveData.setValue(new BannerListApiResponse(response.body()));
+                    }
+                }
+            }
 
             @Override
             public void onFailure(Call<BannerListResponse> call, Throwable t) {

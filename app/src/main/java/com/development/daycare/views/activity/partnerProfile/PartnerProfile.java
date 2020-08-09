@@ -28,7 +28,9 @@ import com.development.daycare.model.partnerprofile.ProfileData;
 import com.development.daycare.session.SessionManager;
 import com.development.daycare.views.activity.BaseActivity;
 import com.development.daycare.views.activity.ImagePickerScreen;
+import com.development.daycare.views.activity.changePassword.ChangePassword;
 import com.nguyenhoanglam.imagepicker.model.Image;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -66,9 +68,17 @@ ActivityPartnerProfileBinding partnerProfileBinding;
 
                 if(apiResponse.getResponse()!=null){
                     if(apiResponse.getResponse().getStatus() ==1){
-                        partnerProfileBinding.inputName.setText(apiResponse.getResponse().getData().get(0).getUser_first_name());
-                        partnerProfileBinding.inputContact.setText(apiResponse.getResponse().getData().get(0).getUser_phone_number());
-                        partnerProfileBinding.inputEmail.setText(apiResponse.getResponse().getData().get(0).getUser_email());
+                        partnerProfileBinding.inputName.setText(apiResponse.getResponse().getData().getUser_first_name());
+                        partnerProfileBinding.inputContact.setText(apiResponse.getResponse().getData().getUser_phone_number());
+                        partnerProfileBinding.inputEmail.setText(apiResponse.getResponse().getData().getUser_email());
+
+                        if(apiResponse.getResponse().getData().getUser_profile_image() !=null){
+                            Picasso.get()
+                                    .load(apiResponse.getResponse().getData().getUser_profile_image())
+                                   //  .placeholder(R.drawable.i)
+                                    //   .error(R.drawable.err)
+                                    .into( partnerProfileBinding.profileImage);
+                        }
                     }
 
                 }else{
@@ -118,12 +128,13 @@ ActivityPartnerProfileBinding partnerProfileBinding;
 
                 if(apiResponse.getResponse()!=null){
                     if(apiResponse.getResponse().getStatus() ==1){
-                        partnerProfileBinding.inputName.setText(apiResponse.getResponse().getData().get(0).getUser_first_name());
-                        partnerProfileBinding.inputContact.setText(apiResponse.getResponse().getData().get(0).getUser_phone_number());
-                        partnerProfileBinding.inputEmail.setText(apiResponse.getResponse().getData().get(0).getUser_email());
+                        Toast.makeText(PartnerProfile.this, apiResponse.getResponse().getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
-                }else{
+                 }else if(apiResponse.getError() !=null){
+                    Toast.makeText(PartnerProfile.this, String.valueOf(apiResponse.getError()), Toast.LENGTH_SHORT).show();
+                }
+                else{
                     Toast.makeText(PartnerProfile.this, apiResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
@@ -149,6 +160,7 @@ ActivityPartnerProfileBinding partnerProfileBinding;
         partnerProfileBinding.back.setOnClickListener(this);
         partnerProfileBinding.btnUpdate.setOnClickListener(this);
         partnerProfileBinding.profileImage.setOnClickListener(this);
+        partnerProfileBinding.changePassword.setOnClickListener(this);
     }
 
     @Override
@@ -168,6 +180,9 @@ ActivityPartnerProfileBinding partnerProfileBinding;
                 }else if(partnerProfileBinding.inputContact.getText().toString().isEmpty()){
                     Toast.makeText(this, getString(R.string.contact_phone_empty), Toast.LENGTH_SHORT).show();
                     break;
+                }else if(profileData.getUser_profile_image() == null || profileData.getUser_profile_image().isEmpty()) {
+                    Toast.makeText(this, getString(R.string.profile_empty), Toast.LENGTH_SHORT).show();
+                    break;
                 }else{
                     updateProfile();
                 }
@@ -177,6 +192,10 @@ ActivityPartnerProfileBinding partnerProfileBinding;
             case R.id.profile_image:
                 Intent intent = new Intent(PartnerProfile.this, ImagePickerScreen.class);
                 startActivityForResult(intent, 103);// Activity is started with requestCode 2
+                break;
+
+            case R.id.change_password:
+                startActivity(new Intent(PartnerProfile.this, ChangePassword.class));
                 break;
         }
     }
@@ -239,8 +258,7 @@ ActivityPartnerProfileBinding partnerProfileBinding;
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         String  image_string = Base64.encodeToString(byteArray, Base64.DEFAULT);
-        profileData.setUser_profile_image(image_string);
-
+        profileData.setUser_profile_image("data:image/jpeg;base64,"+image_string);
     }
 
 }

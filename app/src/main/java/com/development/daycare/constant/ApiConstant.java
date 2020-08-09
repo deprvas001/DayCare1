@@ -21,4 +21,6 @@ public class ApiConstant {
     public static final String DAYCARE_ID="day_care_id";
     public static final String IMAGE_PICK = "image_pick";
     public static final String BANNER_ID="banner_id";
+    public static final String DAY_CARE_SHOW = "day_care_show";
+    public static final String DAY_CARE_ACTIVITY = "day_care_activity";
 }

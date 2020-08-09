@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -21,8 +22,10 @@ import com.development.daycare.model.addBanner.BannerListApiResponse;
 import com.development.daycare.model.addBanner.BannerResponseListData;
 import com.development.daycare.model.addCareActivity.ActivityListApiResponse;
 import com.development.daycare.model.addCareActivity.ActivityListData;
+import com.development.daycare.session.SessionManager;
 import com.development.daycare.views.activity.BaseActivity;
 import com.development.daycare.views.activity.dayCareBanner.AddBannerViewModel;
+import com.development.daycare.views.activity.dayCareBanner.DayCareBanner;
 import com.development.daycare.views.activity.dayCareBanner.ShowBannerList;
 
 import java.util.HashMap;
@@ -34,10 +37,14 @@ ActivityCareListBinding listBinding;
     CareViewModel viewModel;
     ActivityListAdapter adapter;
     RecyclerView.LayoutManager mLayoutManager;
+    SessionManager session;
+    String token,day_care_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         listBinding = DataBindingUtil.setContentView(this,R.layout.activity_care_list);
+        setClickListener();
         checkIntent();
     }
 
@@ -49,17 +56,22 @@ ActivityCareListBinding listBinding;
         headers.put(ApiConstant.USER_TYPE, ApiConstant.USER_TYPE_DAYCARE);
         headers.put(ApiConstant.USER_DEVICE_TYPE, ApiConstant.USER_DEVICE_TYPE_VALUE);
         headers.put(ApiConstant.USER_DEVICE_TOKEN, ApiConstant.USER_DEVICE_TOKEN_VALUE);
-        headers.put(ApiConstant.AUTHENTICATE_TOKEN, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3ZWJmdW1lYXBwLmNvbSIsImF1ZCI6IldlYmZ1bWUgSmFzb24gQXBwIiwiaWF0IjoxNTg5MzU0MTE0LCJuYmYiOjE1ODkzNTQxMTQsImV4cCI6MTU5MDU2MzcxNCwiZGF0YSI6eyJ1c2VyX3R5cGUiOiJEQVlDQVJFIiwidXNlcl9kZXZpY2VfdHlwZSI6IkFETlJPSUQiLCJ1c2VyX2RldmljZV90b2tlbiI6IjIzNDIzNGR2ZGZkZnNkZnNkZiIsIlNvdXJjZXMiOiJBUFAiLCJ1c2VyX25hbWUiOiIxMTExQGdtYWlsLmNvbSIsInVzZXJfaWQiOiI5MCIsInVzZXJfbG9nX2lkIjo0NX19.j5-31UujgKd01b9OtvXAakLqbn-y9CVaqImnDU2OQrA");
+        headers.put(ApiConstant.AUTHENTICATE_TOKEN, token);
 
 
         viewModel = ViewModelProviders.of(this).get( CareViewModel.class);
-        viewModel.getActivityList(this, headers, "0", "10","29").observe(this, new Observer<ActivityListApiResponse>() {
+        viewModel.getActivityList(this, headers, "0", "10",daycare_id).observe(this, new Observer<ActivityListApiResponse>() {
             @Override
             public void onChanged(ActivityListApiResponse apiResponse) {
                 hideProgressDialog();
                 if (apiResponse.response != null) {
                     if (apiResponse.getResponse().getStatus() == 1) {
-                        setRecyclerview(apiResponse.getResponse().getData());
+                        if(apiResponse.getResponse().getData().size()>0){
+                            setRecyclerview(apiResponse.getResponse().getData());
+                        }else{
+                            Toast.makeText(CareActivityList.this, "Not Data.", Toast.LENGTH_SHORT).show();
+                        }
+
                     }else{
                         // Toast.makeText(ShowBannerList.this, apiResponse.getResponse()., Toast.LENGTH_SHORT).show();
                     }
@@ -78,15 +90,23 @@ ActivityCareListBinding listBinding;
                 finish();
                 break;
 
+            case R.id.add_more:
+                Intent intent = new Intent(CareActivityList.this, DayCareActivity.class);
+                intent.putExtra(ApiConstant.DAYCARE_ID,day_care_id);
+                intent.putExtra(ApiConstant.DAY_CARE_SHOW,true);
+                startActivity(intent);
+                break;
+
         }
     }
 
     private void checkIntent(){
+
         if(getIntent().getExtras()!=null){
 
             String daycare_id = getIntent().getExtras().getString(ApiConstant.DAYCARE_ID);
 
-            getCareActivityList(daycare_id);
+            getSession(daycare_id);
 
         }
     }
@@ -98,4 +118,29 @@ ActivityCareListBinding listBinding;
         listBinding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         listBinding.recyclerView.setAdapter(adapter);
     }
+
+    private void getSession(String daycare_id) {
+        session = new SessionManager(this);
+        // get user data from session
+        HashMap<String, String> user = session.getUserDetails();
+
+        // name
+        String name = user.get(SessionManager.KEY_NAME);
+
+        // email
+        String email = user.get(SessionManager.KEY_EMAIL);
+        String image = user.get(SessionManager.KEY_IMAGE);
+        token = user.get(SessionManager.KEY_TOKEN);
+        String phone = user.get(SessionManager.KEY_PHONE);
+        day_care_id  = daycare_id;
+
+        getCareActivityList(daycare_id);
+
+    }
+
+    private void setClickListener(){
+        listBinding.addMore.setOnClickListener(this);
+        listBinding.back.setOnClickListener(this);
+    }
+
 }

@@ -4,7 +4,8 @@ import java.util.List;
 
 public class ProfileResponse {
     private int status;
-    private List<ProfileData> data;
+    private String message;
+    private ProfileData data;
 
     public int getStatus() {
         return status;
@@ -14,11 +15,19 @@ public class ProfileResponse {
         this.status = status;
     }
 
-    public List<ProfileData> getData() {
+    public ProfileData getData() {
         return data;
     }
 
-    public void setData(List<ProfileData> data) {
+    public void setData(ProfileData data) {
         this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

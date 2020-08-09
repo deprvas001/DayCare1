@@ -11,6 +11,7 @@ import com.development.daycare.R;
 import com.development.daycare.databinding.ActivityPartnerCareHomeBinding;
 import com.development.daycare.views.activity.dayCareAdd.AddDayCare;
 import com.development.daycare.views.activity.partnerProfile.PartnerProfile;
+import com.development.daycare.views.activity.showDayCare.ShowDayCare;
 
 public class PartnerCareHome extends AppCompatActivity implements View.OnClickListener {
 ActivityPartnerCareHomeBinding careHomeBinding;
@@ -32,6 +33,10 @@ ActivityPartnerCareHomeBinding careHomeBinding;
                 startActivity(new Intent(PartnerCareHome.this, AddDayCare.class));
                 break;
 
+            case R.id.btn_show:
+                startActivity(new Intent(PartnerCareHome.this, ShowDayCare.class));
+                break;
+
             case R.id.back:
                 finish();
                  break;
@@ -42,5 +47,6 @@ ActivityPartnerCareHomeBinding careHomeBinding;
         careHomeBinding.btnProfile.setOnClickListener(this);
         careHomeBinding.back.setOnClickListener(this);
         careHomeBinding.btnAdd.setOnClickListener(this);
+        careHomeBinding.btnShow.setOnClickListener(this);
     }
 }

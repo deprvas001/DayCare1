@@ -8,15 +8,10 @@ import com.google.gson.annotations.SerializedName;
 public class DayCareInfo implements Parcelable {
     private String id;
     private String daycare_id;
-    @SerializedName("daycare_contact_label")
     private String contact_label;
-    @SerializedName("daycare_contact_person_name")
     private String contact_name;
-    @SerializedName("daycare_contact_person_email")
     private String contact_email;
-    @SerializedName("daycare_contact_person_phone_number1")
     private String contact_phone;
-    @SerializedName("daycare_contact_person_phone_number2")
     private String contact_alternate_phone;
 
     public DayCareInfo(){

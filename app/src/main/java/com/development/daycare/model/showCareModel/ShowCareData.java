@@ -4,9 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.development.daycare.model.addDay.CareOpenTime;
+import com.development.daycare.model.addDay.DayCareBannerList;
 import com.development.daycare.model.addDay.DayCareInfo;
 import com.development.daycare.model.addDay.DayCareMenu;
+import com.development.daycare.model.addDay.InHouseActivity;
 import com.development.daycare.model.addDay.SubjectList;
+import com.development.daycare.views.activity.dayCareBanner.DayCareBanner;
 
 import java.util.List;
 
@@ -34,6 +37,9 @@ public class ShowCareData implements Parcelable {
     private List<DayCareMenu> daycare_menu_list;
     private List<CareOpenTime> daycare_open_hours;
     private List<SubjectList> daycare_tution_subject_list;
+    private List<DayCareBannerList> daycare_banner_list;
+    private List<InHouseActivity> daycare_inhouse_activity_list;
+    private String daycare_distance;
 
     protected ShowCareData(Parcel in) {
         daycare_id = in.readString();
@@ -59,6 +65,9 @@ public class ShowCareData implements Parcelable {
         daycare_menu_list = in.createTypedArrayList(DayCareMenu.CREATOR);
         daycare_open_hours = in.createTypedArrayList(CareOpenTime.CREATOR);
         daycare_tution_subject_list = in.createTypedArrayList(SubjectList.CREATOR);
+        daycare_banner_list = in.createTypedArrayList(DayCareBannerList.CREATOR);
+        daycare_inhouse_activity_list = in.createTypedArrayList(InHouseActivity.CREATOR);
+        daycare_distance = in.readString();
     }
 
     @Override
@@ -86,6 +95,9 @@ public class ShowCareData implements Parcelable {
         dest.writeTypedList(daycare_menu_list);
         dest.writeTypedList(daycare_open_hours);
         dest.writeTypedList(daycare_tution_subject_list);
+        dest.writeTypedList(daycare_banner_list);
+        dest.writeTypedList(daycare_inhouse_activity_list);
+        dest.writeString(daycare_distance);
     }
 
     @Override
@@ -287,5 +299,29 @@ public class ShowCareData implements Parcelable {
 
     public void setDaycare_tution_subject_list(List<SubjectList> daycare_tution_subject_list) {
         this.daycare_tution_subject_list = daycare_tution_subject_list;
+    }
+
+    public List<DayCareBannerList> getDaycare_banner_list() {
+        return daycare_banner_list;
+    }
+
+    public void setDaycare_banner_list(List<DayCareBannerList> daycare_banner_list) {
+        this.daycare_banner_list = daycare_banner_list;
+    }
+
+    public List<InHouseActivity> getDaycare_inhouse_activity_list() {
+        return daycare_inhouse_activity_list;
+    }
+
+    public void setDaycare_inhouse_activity_list(List<InHouseActivity> daycare_inhouse_activity_list) {
+        this.daycare_inhouse_activity_list = daycare_inhouse_activity_list;
+    }
+
+    public String getDaycare_distance() {
+        return daycare_distance;
+    }
+
+    public void setDaycare_distance(String daycare_distance) {
+        this.daycare_distance = daycare_distance;
     }
 }

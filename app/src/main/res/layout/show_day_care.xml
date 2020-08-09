@@ -7,7 +7,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="10dp">
 
         <RelativeLayout
@@ -22,11 +22,11 @@
                 android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:layout_marginRight="15dp"
+                android:scaleType="fitXY"
                 />
 
             <LinearLayout
                 android:id="@+id/name_view"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/imageView"
@@ -63,8 +63,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/name_view"
-                android:layout_marginBottom="10dp"
                 android:layout_toRightOf="@id/address_view"/>
+
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/address"
+                android:layout_marginBottom="10dp"
+                android:textColor="@android:color/holo_red_light"
+                android:layout_toRightOf="@id/imageView"/>
+
+
 
         </RelativeLayout>
 

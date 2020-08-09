@@ -131,7 +131,7 @@
                                 android:id="@+id/upload_image"
                                 android:layout_width="match_parent"
                                 android:layout_height="150dp"
-                                android:scaleType="fitCenter"
+                                android:scaleType="fitXY"
                                 android:alpha="0.8"
                                 android:src="@drawable/choose_image"
                                 />

@@ -1,137 +1,228 @@
 package com.development.daycare.views.activity.daycarelist;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.development.daycare.DayCareMarker;
 import com.development.daycare.R;
+import com.development.daycare.UserLocationMap;
 import com.development.daycare.adapter.BookmarkAdapter;
+import com.development.daycare.adapter.CareListAdapter;
 import com.development.daycare.adapter.DayCareListAdapter;
+import com.development.daycare.constant.ApiConstant;
 import com.development.daycare.databinding.ActivityDayCareDetailBinding;
 import com.development.daycare.databinding.ActivityDayCareListBinding;
 import com.development.daycare.model.BookmarkData;
+import com.development.daycare.model.dayCareList.DayCareListModel;
+import com.development.daycare.model.dayCareList.DayCareListPost;
+import com.development.daycare.model.filter.FilterPostRequest;
+import com.development.daycare.model.showCareModel.ShowCareData;
+import com.development.daycare.model.showCareModel.ShowCareResponse;
+import com.development.daycare.views.activity.SearchScreen;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-public class DayCareList extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
+public class DayCareList extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener {
     private ActivityDayCareListBinding listBinding;
     private GoogleMap mMap;
-   /* DayCareListAdapter adapter;
-    RecyclerView recyclerView;
-    RecyclerView.LayoutManager mLayoutManager;*/
+    private CareListAdapter careAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    ArrayList<ShowCareData> careDataList = new ArrayList<>();
+    //Location
+
+    Map<String, String> headers;
+    DayCareListPost post;
+    private CareListViewModel viewModel;
+    FilterPostRequest postRequest;
+    SupportMapFragment mapFragment;
     LocationManager locationManager;
     LocationListener locationListener;
-    private GoogleMap.OnCameraIdleListener onCameraIdleListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_day_care_list);
-      //  recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-       // setData();
-      //  listBinding = DataBindingUtil.setContentView(this,R.layout.activity_day_care_list);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        listBinding = DataBindingUtil.setContentView(this, R.layout.activity_day_care_list);
+
+        init();
+        getData();
+
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         //configureCameraIdle();
+    }
+
+    private void getData() {
+        viewModel = ViewModelProviders.of(this).get(CareListViewModel.class);
+
+        observeViewModel();
+
+    }
+
+    private void apiCall() {
+        headers = new HashMap<>();
+        headers.put(ApiConstant.CONTENT_TYPE, ApiConstant.CONTENT_TYPE_VALUE);
+
+        post = new DayCareListPost();
+        post.setOffset("0");
+        post.setPer_page("10");
+        post.setDistance("10");
+        post.setStartlat("28.459497");
+        post.setStartlng("77.026634");
+
+        viewModel.refresh(headers, post);
+    }
+
+
+    private void observeViewModel() {
+        viewModel.homeResponse.observe(this, response -> {
+            if (response != null) {
+                if(response.getStatus() == 1){
+                    if(response.getData().size()>0){
+                        listBinding.recyclerView.setVisibility(View.VISIBLE);
+                        setRecyclerView(response.getData());
+                    }
+                }else
+                    {
+
+                    Toast.makeText(this, "No Result Found.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        viewModel.error.observe(this, isError -> {
+            if (isError != null && isError instanceof Boolean) {
+               /* homeBinding.loadError.setVisibility(isError ? View.VISIBLE : View.GONE);
+                if(isError){
+                    homeBinding.layout.setVisibility(View.GONE);
+                }*/
+            }
+        });
+
+        viewModel.loading.observe(this, isLoading -> {
+            if (isLoading != null && isLoading instanceof Boolean) {
+
+                listBinding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                if (isLoading) {
+                    /*  homeBinding.loadError.setVisibility(View.GONE);*/
+
+                    listBinding.recyclerView.setVisibility(View.GONE);
+                }
+
+               /* homeBinding.shimmerViewContainer.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                if(isLoading){
+                    homeBinding.loadError.setVisibility(View.GONE);
+                    homeBinding.layout.setVisibility(View.GONE);
+                }*/
+            }
+        });
 
 
     }
 
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMarkerDragListener(this);
-        locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-        locationListener =  new LocationListener() {
+
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 mMap.clear();
-                Log.i("Current Location",location.toString());
 
-                LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(user_location).title("Marker")
-                        .draggable(true)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
+                headers = new HashMap<>();
+                headers.put(ApiConstant.CONTENT_TYPE, ApiConstant.CONTENT_TYPE_VALUE);
 
+                post = new DayCareListPost();
+                post.setOffset("0");
+                post.setPer_page("10");
+                post.setDistance("5");
 
-                );
-                mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                //  mMap.setMaxZoomPreference(10);
-            //       mMap.moveCamera(CameraUpdateFactory.newLatLng(user_location));
+                post.setStartlat(String.valueOf(location.getLatitude()));
+                post.setStartlng(String.valueOf(location.getLongitude()));
 
+                viewModel.refresh(headers, post);
 
-                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+                post.setStartlat(String.valueOf(location.getLatitude()));
+                post.setStartlng(String.valueOf(location.getLongitude()));
 
-                try{
-                    List<Address> listAddress = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
+                LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(userLocation).title("Marker in Sydney"));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation,14.0f));
 
-                    if(listAddress !=null && listAddress.size()>0){
-                        Log.i("PlaceInfo",listAddress.get(0).toString());
-
-                        String address="";
-                        if(listAddress.get(0).getAdminArea() !=null){
-                            address+= listAddress.get(0).getAdminArea()+" ";
-                        }
-
-                        if(listAddress.get(0).getLocality()!=null){
-                            address+= listAddress.get(0).getLocality()+" ";
-                        }
-
-                        if(listAddress.get(0).getThoroughfare()!=null){
-                            address+= listAddress.get(0).getThoroughfare();
-                        }
-
-                   //     Toast.makeText(DayCareList.this, address, Toast.LENGTH_SHORT).show();
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                   mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(user_location, 12.0f));
             }
 
             @Override
@@ -150,96 +241,192 @@ public class DayCareList extends AppCompatActivity implements OnMapReadyCallback
             }
         };
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
-        }else{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,60000,0,locationListener);
-            Location lastKnowLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-            mMap.clear();
-            Log.i("Current Location",lastKnowLocation.toString());
-
-            LatLng user_location = new LatLng(lastKnowLocation.getLatitude(), lastKnowLocation.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(user_location).title("Marker")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
-
-            );
-            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-            //  mMap.setMaxZoomPreference(10);
-          //     mMap.moveCamera(CameraUpdateFactory.newLatLng(user_location));
-
-          mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(user_location, 12.0f));
-
+        if (Build.VERSION.SDK_INT < 23) {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            } else {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 50000, 0, locationListener);
+            }
         }
 
     }
 
-  /*  private void setRecyclerview(List<BookmarkData> bookmarkDataList){
-        adapter = new DayCareListAdapter(this, bookmarkDataList);
+
+    private void init() {
+        //  listBinding.search.setOnClickListener(this);
+        listBinding.distance.setText("5");
+        listBinding.filter.setOnClickListener(this);
+        listBinding.fab.setOnClickListener(this);
+        listBinding.search.setOnClickListener(this);
+
+        listBinding.refreshLayout.setOnRefreshListener(() -> {
+            listBinding.recyclerView.setVisibility(View.GONE);
+            viewModel.refresh(headers, post);
+            listBinding.refreshLayout.setRefreshing(false);
+            observeViewModel();
+        });
+
+    }
+
+    private void setRecyclerView(List<ShowCareData> dataList) {
+        listBinding.resultFound.setText("Result Found: " + String.valueOf(dataList.size()));
+        careDataList = (ArrayList)dataList;
+
+        careAdapter = new CareListAdapter(this, dataList);
         mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
+        listBinding.recyclerView.setLayoutManager(mLayoutManager);
+        listBinding.recyclerView.setItemAnimator(new DefaultItemAnimator());
+        listBinding.recyclerView.setAdapter(careAdapter);
     }
-
-
-    private void setData(){
-        List<BookmarkData> bookmarkList = new ArrayList<>();
-
-        for(int i=0;i<6;i++){
-            BookmarkData bookmark = new BookmarkData();
-            bookmark.setName("Day Care Name");
-            bookmark.setAge("3-4 years");
-            bookmark.setCountry("India");
-            bookmark.setCity("Delhi");
-            bookmark.setImage_url("https://cdn.britannica.com/24/141224-050-0F5FA19C/Caregivers-children-day-care-centre.jpg");
-            bookmark.setAddress("9/55 Caroline Street,South Yarra VIC");
-            bookmarkList.add(bookmark);
-        }
-
-        setRecyclerview(bookmarkList);
-
-
-    }*/
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.filter:
+                showCustomDialog();
+                break;
 
+            case R.id.search:
+                startActivity(new Intent(this, SearchScreen.class));
+                break;
+
+            case R.id.fab:
+                if(careDataList != null && careDataList.size() > 0 ){
+                    Intent intent = new Intent(DayCareList.this, DayCareMarker.class);
+                    intent.putParcelableArrayListExtra("marker_list",  careDataList);
+                    startActivity(intent);
+                 }
+
+                break;
+        }
+    }
+
+
+    private void showCustomDialog() {
+        postRequest = new FilterPostRequest();
+        //before inflating the custom alert dialog layout, we will get the current activity viewgroup
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+
+        //then we will inflate the custom alert dialog xml that we created
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.filter_custom_dialog, viewGroup, false);
+
+        //Now we need an AlertDialog.Builder object
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        //setting the view of the builder to our custom view that we already inflated
+        builder.setView(dialogView);
+
+
+        Button ok = (Button) dialogView.findViewById(R.id.buttonOk);
+        ImageView close_dialog = (ImageView) dialogView.findViewById(R.id.close);
+
+        RadioGroup cctv_group = (RadioGroup) dialogView.findViewById(R.id.cctv_group);
+        RadioGroup transport_group = (RadioGroup) dialogView.findViewById(R.id.transport_group);
+        RadioGroup meal_group = (RadioGroup) dialogView.findViewById(R.id.meal_group);
+
+        cctv_group.setOnCheckedChangeListener(this);
+        transport_group.setOnCheckedChangeListener(this);
+        meal_group.setOnCheckedChangeListener(this);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                postRequest.setOffset("0");
+                postRequest.setPer_page("10");
+                postRequest.setStartlat("28.459497");
+                postRequest.setStartlng("77.026634");
+                postRequest.setPrice_min_value("");
+                postRequest.setPrice_max_value("");
+                postRequest.setAge_min_value("2");
+                postRequest.setAge_max_value("4");
+                postRequest.setDaycare_type("1");
+                postRequest.setDaycare_rating_value("");
+
+                viewModel.filterRefresh(headers, postRequest);
+                observeViewModel();
+                alertDialog.dismiss();
+            }
+        });
+
+
+        close_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup radioGroup, int chekedId) {
+        switch (chekedId) {
+            case R.id.cctv_yes:
+                postRequest.setDaycare_cctv_value("1");
+                break;
+
+            case R.id.cctv_no:
+                postRequest.setDaycare_cctv_value("0");
+                break;
+
+            case R.id.transport_yes:
+                postRequest.setDaycare_transportation_required("1");
+                break;
+
+            case R.id.transport_no:
+                postRequest.setDaycare_transportation_required("0");
+                break;
+
+            case R.id.meal_yes:
+                postRequest.setDaycare_type_of_meals("1");
+                break;
+
+            case R.id.meal_no:
+                postRequest.setDaycare_type_of_meals("0");
+                break;
+        }
+
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        /*marker.getPosition();
+        LatLng userLatLng = new LatLng(location.getLatitude(),location.getLongitude());*/
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 18f));
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 50000, 0, locationListener);
+                    Location lastknowLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED){
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,60000,0,locationListener);
+                    mMap.clear();
+                    LatLng userLocation = new LatLng(lastknowLocation.getLatitude(), lastknowLocation.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(userLocation).title("Marker in Sydney"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
+                }
             }
-
         }
-    }
-
-    @Override
-    public void onMarkerDragStart(Marker marker) {
-        Log.d("System out", "onMarkerDragStart..."+marker.getPosition().latitude+"..."+marker.getPosition().longitude);
-
-    }
-
-    @Override
-    public void onMarkerDrag(Marker marker) {
-        Log.d("System out", "onMarkerDragEnd..."+marker.getPosition().latitude+"..."+marker.getPosition().longitude);
-
-        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
-    }
-
-    @Override
-    public void onMarkerDragEnd(Marker marker) {
-        Log.i("System out", "onMarkerDrag...");
     }
 }
